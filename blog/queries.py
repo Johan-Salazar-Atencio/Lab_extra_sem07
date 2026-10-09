@@ -54,4 +54,4 @@ def most_commented_posts(limit=5):
 
 
 def posts_for_front_page():
-    return Post.published_objects.order_by("-published_at")
+    return Post.published_objects.select_related("author").prefetch_related("tags").order_by("-published_at")
