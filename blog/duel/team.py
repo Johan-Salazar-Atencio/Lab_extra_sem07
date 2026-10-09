@@ -19,40 +19,50 @@ from blog.models import Author, Category, Comment, Post, Profile, Tag  # noqa: F
 
 def q1():
     """Los artículos que ya están publicados."""
-    raise NotImplementedError
+    return Post.published_objects.all()
 
 
 def q2():
     """Los artículos que no tienen categoría asignada."""
-    raise NotImplementedError
+    return Post.objects.filter(category__isnull=True)
 
 
 def q3():
     """Los artículos publicados entre el 1 de marzo y el 31 de mayo de 2026, ambos días incluidos."""
-    raise NotImplementedError
+    return Post.objects.filter(
+        published_at__gte=date(2026, 3, 1),
+        published_at__lte=date(2026, 5, 31),
+    )
 
 
 def q4():
     """Los artículos con más de dos comentarios."""
-    raise NotImplementedError
+    return Post.objects.annotate(n_comments=Count("comments")).filter(n_comments__gt=2)
 
 
 def q5():
     """Los tres artículos publicados con más comentarios; de cada uno, cuántos comentarios
     (`n_comments`) y cuántas etiquetas (`n_tags`)."""
-    raise NotImplementedError
+    return (
+        Post.published_objects.annotate(
+            n_comments=Count("comments", distinct=True),
+            n_tags=Count("tags", distinct=True),
+        )
+        .order_by("-n_comments")[:3]
+    )
 
 
 def q6():
     """Los artículos escritos por autores de Perú (publicados o no)."""
-    raise NotImplementedError
+    return Post.objects.filter(author__profile__country="Perú")
 
 
 def q7():
     """Los comentarios de los artículos de la categoría «Tecnología»."""
-    raise NotImplementedError
+    return Comment.objects.filter(post__category__name="Tecnología")
 
 
 def q8():
     """Los autores que nunca han publicado un artículo."""
-    raise NotImplementedError
+    published_authors = Post.published_objects.values("author").distinct()
+    return Author.objects.exclude(id__in=published_authors)
