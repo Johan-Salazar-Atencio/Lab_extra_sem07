@@ -6,7 +6,7 @@ from .models import Author, Category, Comment, Post, Profile, Tag
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "author", "category", "published", "published_at")
-    list_filter = ("published", "category")
+    list_filter = ("category",)
     search_fields = ("title",)
 
 

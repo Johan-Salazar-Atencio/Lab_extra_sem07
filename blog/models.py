@@ -36,6 +36,11 @@ class Tag(models.Model):
         return self.name
 
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(published=True)
+
+
 class Post(models.Model):
     title = models.CharField(max_length=200)
     body = models.TextField(blank=True)
@@ -46,6 +51,9 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name="posts")
     published = models.BooleanField(default=False)
     published_at = models.DateField(null=True, blank=True)
+
+    objects = models.Manager()
+    published_objects = PublishedManager()
 
     def __str__(self):
         return self.title

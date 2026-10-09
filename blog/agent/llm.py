@@ -26,8 +26,12 @@ SYSTEM = (
 
 
 def _post_json(url: str, payload: dict, timeout: int = 60) -> dict:
+    headers = {"Content-Type": "application/json"}
+    api_key = os.environ.get("LLM_API_KEY")
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
     request = urllib.request.Request(
-        url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"}
+        url, data=json.dumps(payload).encode(), headers=headers
     )
     with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310
         return json.load(response)
